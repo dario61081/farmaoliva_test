@@ -1,5 +1,5 @@
 # Gestion de organigrama
 
-## Desarrollo de examen tecnico
+Desarrollo de examen tecnico
 
 
