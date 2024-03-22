@@ -1,0 +1,14 @@
+.idea
+.pytest_cache
+venv
+*.pyc
+*.pyo
+*.so
+*.egg-info
+*.egg-info/*
+*.dist-info
+*.dist-info/*
+*.egg
+*.egg/*
+*.whl
+*.whl/*

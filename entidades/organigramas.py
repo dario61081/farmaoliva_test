@@ -20,12 +20,12 @@ class Organigrama:
         self.raiz = None
 
     def imprimir_organigrama(self):
-        print "\n\n*** Organigrama \"{titulo}\" ***".format(titulo=self.titulo)
+        print("\n\n*** Organigrama \"{titulo}\" ***".format(titulo=self.titulo))
         if self.raiz:
             self.raiz.imprimir_jerarquia()
         else:
-            print "El organigrama no tiene areas definidas"
-        print "\n\n"
+            print("El organigrama no tiene areas definidas")
+        print( "\n\n")
 
     def get_area(self, codigo_area):
         """
@@ -46,5 +46,5 @@ class Organigrama:
         if inicio:
             return inicio.sumorg()
         else:
-            print "Area con el codigo {codigo_area} no existe".format(codigo_area=codigo_area)
+            print ("Area con el codigo {codigo_area} no existe".format(codigo_area=codigo_area))
             return 0
