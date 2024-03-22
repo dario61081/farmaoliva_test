@@ -1,6 +1,6 @@
 # Gestion de organigrama
 
-Desarrollo de examen tecnico
+Desarrollo de examen técnico
 
 ![alt text](images/image.png "Vista previa")
 
