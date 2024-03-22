@@ -6,8 +6,9 @@ __email__ = "dario61081@gmail.com"
 from entidades import *
 from funciones.organigrama_funciones import leer_y_cargar_organigrama, sumorg
 
-if __name__ == '__main__':
-    # ejecutar rutinas de carga y acciones
+
+def main():
+     # ejecutar rutinas de carga y acciones
     titulo = input("Titulo del organigrama > ")
     if not titulo:
         titulo = "Empresa ABC"
@@ -36,3 +37,6 @@ if __name__ == '__main__':
                 Capturar errores de inputs o conversion
                 """
                 print("(!) {}".format(e))
+
+if __name__ == '__main__':
+    main()
