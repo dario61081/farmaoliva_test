@@ -13,7 +13,7 @@ def main():
     if not titulo:
         titulo = "Empresa ABC DEMO"
 
-    ControllerOrganigrama(organigrama=Organigrama(titulo=titulo))()
+    ControllerOrganigrama(organigrama=Organigrama(titulo=titulo)).execute()
 
 
 if __name__ == '__main__':

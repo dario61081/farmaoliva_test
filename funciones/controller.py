@@ -2,16 +2,35 @@ __version__ = "1.0"
 __author__ = "Dario Garcia"
 
 from entidades import Organigrama, Area
+from funciones.actions import RegisterArea, PrintOrganigrama, IAction, RemoveArea
 
 
 class ControllerOrganigrama:
+    """
+    Controlador de organigrama
+    """
 
     def __init__(self, *, organigrama: Organigrama) -> None:
         self.organigrama = organigrama
         self.running = True
         self.cursor = "{} > "
+        self.actions = {}
 
-    def __call__(self, *args, **kwargs) -> None:
+        # def remove_area(organigrama: Organigrama, area: Area) -> None:
+        #     organigrama.remove_area(area=area)
+
+        # registrar acciones
+        self.add_action("a", RegisterArea)
+        self.add_action("b", RemoveArea)
+        self.add_action("i", PrintOrganigrama)
+
+    def add_action(self, name: str, action: IAction):
+        self.actions[name] = action
+
+    def execute_action(self, name: str, organigrama: Organigrama, **kwargs) -> None:
+        self.actions[name]()(organigrama, **kwargs)
+
+    def execute(self) -> None:
 
         def title(titulo: str, divider: str = "") -> None:
             print(f"{titulo}")
@@ -20,9 +39,11 @@ class ControllerOrganigrama:
         while self.running:
 
             # vista previa
-            self.organigrama.render()
+            # self.organigrama.render()
+            self.execute_action("i", self.organigrama, None)
             # seleccione accion?
             comando = input(self.cursor.format("Accion: (a: nuevo | b: borrar | i: imprimir | x: salir "))
+            self.execute_action(comando, self.organigrama, None)
             if comando in ('a', 'b', 'i', 'x'):
                 if comando == 'a':
                     # agregar nodo
