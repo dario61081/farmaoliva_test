@@ -22,7 +22,7 @@ class TestOrganigrama(unittest.TestCase):
 
     def test_param_titulo_instance(self):
         # verificar si el titulo carga correctamente
-        self.assertIsNotNone(self.org.titulo, msg="Nombre del organigrama no instanciado")
+        self.assertIsNotNone(self.org._titulo, msg="Nombre del organigrama no instanciado")
 
     def test_param_titulo_value(self):
-        self.assertEqual(self.org.titulo, "EMPRESA ABC", msg="Valor del nombre no coincide")
+        self.assertEqual(self.org._titulo, "EMPRESA ABC", msg="Valor del nombre no coincide")

@@ -2,8 +2,7 @@ __version__ = "1.0"
 __author__ = "Dario Garcia"
 __all__ = ['Organigrama']
 
-import json
-import os
+from entidades import Area
 
 
 class Organigrama:
@@ -11,30 +10,53 @@ class Organigrama:
     Clase para manejo de un organigrama
     """
 
-    def __init__(self, titulo):
+    def __init__(self, *, titulo: str):
         """
         Constructor organigrama
         :param nombre: nombre del organigrama
         """
-        self.titulo = titulo
-        self.raiz = None
+        self._titulo = titulo
+        self._raiz = None
 
-    def imprimir_organigrama(self):
-        print("\n\n*** Organigrama \"{titulo}\" ***".format(titulo=self.titulo))
-        if self.raiz:
-            self.raiz.imprimir_jerarquia()
-        else:
-            print("El organigrama no tiene areas definidas")
-        print( "\n\n")
+    def get_root(self) -> Area:
+        """
+        Obtener raiz del organigrama
+        :return: Area
+        """
+        return self._raiz
 
-    def get_area(self, codigo_area):
+    def render(self) -> None:
+        """
+        Render del organigrama
+        """
+        print("\n\n*** Organigrama \"{titulo}\" ***".format(titulo=self._titulo))
+
+        if not self.get_root():
+            print("(!) El organigrama no tiene areas definidas, presione a para agregar una")
+            return
+
+        self.get_root().imprimir_jerarquia()
+
+    def get_area_by_codigo(self, *, codigo_area: int):
         """
         Obtener el area por medio del codigo de area
         :param codigo_area: codigo (int)
         :return: objeto area relacionado
         """
-        if self.raiz:
-            return self.raiz.get(codigo_area)
+        if self._raiz:
+            return self._raiz.get(codigo_area)
+
+    def create_area(self, *, area: Area, parent: Area = None):
+        """
+        Agregar area
+        :param area:
+        :param parent:
+        :return:
+        """
+        if not parent:
+            self._raiz = area
+        else:
+            parent.add_child(area)
 
     def sumorg(self, codigo_area):
         """
@@ -42,9 +64,9 @@ class Organigrama:
         :param codigo_area: codigo del area
         :return: sumatoria de funcionarios (int)
         """
-        inicio = self.get_area(codigo_area)
+        inicio = self.get_area_by_codigo(codigo_area=codigo_area)
         if inicio:
             return inicio.sumorg()
         else:
-            print ("Area con el codigo {codigo_area} no existe".format(codigo_area=codigo_area))
+            print("Area con el codigo {codigo_area} no existe".format(codigo_area=codigo_area))
             return 0

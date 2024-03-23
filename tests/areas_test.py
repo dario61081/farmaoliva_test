@@ -21,15 +21,15 @@ class TestAreas(unittest.TestCase):
         """
         Verificar que este asignando el codigo
         """
-        self.assertIsNotNone(self.area.codigo, msg="Codigo no esta definido")
-        self.assertEqual(self.area.codigo, 1, msg="Codigo de nodo no coincide")
+        self.assertIsNotNone(self.area.__codigo, msg="Codigo no esta definido")
+        self.assertEqual(self.area.__codigo, 1, msg="Codigo de nodo no coincide")
 
     def test_nombre(self):
         """
         Verificar que este capitalizado el nombre del area
         """
-        self.assertIsNotNone(self.area.nombre, msg="Nombre no esta definido")
-        self.assertEqual(self.area.nombre, "Gerencia", msg="Nombre del area no coincide")
+        self.assertIsNotNone(self.area._nombre_area, msg="Nombre no esta definido")
+        self.assertEqual(self.area._nombre_area, "Gerencia", msg="Nombre del area no coincide")
 
     def test_agregar_area_hija(self):
         # agregar un area hija
@@ -46,11 +46,11 @@ class TestAreas(unittest.TestCase):
 
         objeto_a = self.area.get(2)  # cargado previamente
         self.assertIsNotNone(objeto_a, msg="Area 2 buscado no fue encontrado")
-        self.assertEqual(objeto_a.codigo, 2, msg="Codigo del area no es igual")
+        self.assertEqual(objeto_a._codigo_area, 2, msg="Codigo del area no es igual")
 
         objeto_b = self.area.get(4)
         self.assertIsNotNone(objeto_b, msg="Area 4 buscada no fue encontrada")
-        self.assertEqual(objeto_b.codigo, 4, msg="Codigo del area no es igual")
+        self.assertEqual(objeto_b._codigo_area, 4, msg="Codigo del area no es igual")
 
     def test_cantidad_funcionarios(self):
         cantidad = self.area.get_cantidades_funcionarios()
