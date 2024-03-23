@@ -7,7 +7,7 @@ from backports.functools_lru_cache import lru_cache
 
 class Area:
 
-    def __init__(self, *, codigo_area: int, nombre_area: str, cantidad_funcionarios: int = 1):
+    def __init__(self, *, codigo_area: int, nombre_area: str, cantidad_funcionarios: int = 0):
         """
         Nodo del organigrama, actua como area dentro de la organizacion
         :param codigo_area: codigo del area
@@ -19,22 +19,22 @@ class Area:
         self._cantidad_funcionarios = cantidad_funcionarios
 
         # gestion de jerarquia
-        self.parent = None
-        self.childs: list[Area] = []
+        self._parent = None
+        self._childs: list[Area] = []
 
     def get_parent(self):
         """
         Retorna area padre
         :return: Area
         """
-        return self.parent
+        return self._parent
 
     def get_childs(self):
         """
         Retornar areas hijas
         :return: list[Area]
         """
-        return self.childs
+        return self._childs
 
     def add_child(self, new_area) -> None:
         """
@@ -42,22 +42,14 @@ class Area:
         :param new_area:
         :return:
         """
-        self.childs.append(new_area)
+        self._childs.append(new_area)
 
-    @deprecated.deprecated
-    def agregar_area_hija(self, nueva_area_hija):
-        """
-        Registrar un area hija
-        :param nueva_area_hija: objeto area
-        :return:
-        """
-        if not isinstance(nueva_area_hija, (Area,)):
-            raise Exception("Nodo a insertar no es valido")
-
-        nueva_area_hija.padre = self
-        self.add_child(nueva_area_hija)
-
-        return nueva_area_hija
+    @lru_cache(maxsize=100)
+    def total_funcionarios(self):
+        if self._childs:
+            return sum([area.total_funcionarios() for area in self._childs])
+        else:
+            return self._cantidad_funcionarios
 
     @deprecated.deprecated
     def nivel_jerarquia(self):
@@ -66,9 +58,9 @@ class Area:
         while padre:
             salto += 1
             padre = padre.get_parent()
-
         return salto
 
+    #
     @deprecated.deprecated
     def imprimir_jerarquia(self):
         """
@@ -94,11 +86,12 @@ class Area:
             for h in self.get_childs():
                 f = h.get(codigo)
                 if f:
-                    f.imprimir()  # depuracion
+                    # f.imprimir()  # depuracion
                     return f
+                return None
         return None
 
-    @lru_cache(maxsize=10)
+    @lru_cache(maxsize=100)
     def get_cantidades_funcionarios(self):
         """
         Funcion que retorna la cantidad de funcionarios afectados en la rama
@@ -116,10 +109,14 @@ class Area:
         return suma
 
     def __str__(self):
-        marca = " " * self.nivel_jerarquia() * 2 + "+" if self.parent else " "
-        return "{marca} [{codigo}] {nombre} (funcionarios: {cantidad} [{total}]) " \
+        if not self._parent:
+            marca = ""
+        else:
+            marca = "+" + "-" * self.nivel_jerarquia() * 2 + "+" if self._parent else " "
+        return "{marca} [{codigo}:{nivel}] {nombre} (funcionarios: {cantidad} [{total}]) " \
             .format(marca=marca,
                     nombre=self._nombre_area,
+                    nivel=self.nivel_jerarquia(),
                     cantidad=self._cantidad_funcionarios,
                     codigo=self._codigo_area,
                     total=self.get_cantidades_funcionarios() or 0
