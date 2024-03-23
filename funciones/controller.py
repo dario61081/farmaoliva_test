@@ -2,8 +2,8 @@ __version__ = "1.0"
 __author__ = "Dario Garcia"
 
 from entidades import Organigrama
-from funciones.actions import ActionRegisterArea, ActionPrintOrganigrama, IOrganigramaAction, ActionRemoveArea, \
-    ActionContarTotalFuncionarios
+from funciones.actions import ActionOrganigramaAddArea, ActionOrganigramaRender, IOrganigramaAction, \
+    ActionOrganigramaRemoveArea, ActionOrganigramaTotalizar
 
 
 class ControllerOrganigrama:
@@ -18,10 +18,10 @@ class ControllerOrganigrama:
         self.actions = {}
 
         # registrar acciones
-        self.register_action("a", ActionRegisterArea)
-        self.register_action("b", ActionRemoveArea)
-        self.register_action("i", ActionPrintOrganigrama)
-        self.register_action("t", ActionContarTotalFuncionarios)
+        self.register_action("a", ActionOrganigramaAddArea)
+        self.register_action("b", ActionOrganigramaRemoveArea)
+        self.register_action("i", ActionOrganigramaRender)
+        self.register_action("t", ActionOrganigramaTotalizar)
 
     def register_action(self, name: str, action: IOrganigramaAction) -> None:
         self.actions[name] = action

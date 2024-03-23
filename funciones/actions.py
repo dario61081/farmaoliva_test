@@ -14,7 +14,7 @@ class IStateAction(Protocol):
         pass
 
 
-class ActionRegisterArea(IOrganigramaAction):
+class ActionOrganigramaAddArea(IOrganigramaAction):
 
     def __call__(self, organigrama: Organigrama, **kwargs) -> None:
 
@@ -39,7 +39,7 @@ class ActionRegisterArea(IOrganigramaAction):
             print("Agregado al area {}".format(codigo_area))
 
 
-class ActionRemoveArea(IOrganigramaAction):
+class ActionOrganigramaRemoveArea(IOrganigramaAction):
     def __call__(self, organigrama: Organigrama, **kwargs) -> None:
         cursor = "ELIMINAR: {}> "
         codigo = int(input(cursor.format("Codigo del area a borrar")))
@@ -50,11 +50,11 @@ class ActionRemoveArea(IOrganigramaAction):
             print("Area no encontrada")
 
 
-class ActionPrintOrganigrama(IOrganigramaAction):
+class ActionOrganigramaRender(IOrganigramaAction):
     def __call__(self, organigrama: Organigrama, **kwargs) -> None:
         organigrama.render()
 
 
-class ActionContarTotalFuncionarios(IOrganigramaAction):
+class ActionOrganigramaTotalizar(IOrganigramaAction):
     def __call__(self, organigrama: Organigrama, **kwargs) -> None:
         print("La cantidad total de funcionarios es: {}".format(sumorg(organigrama=organigrama, codigo_nodo=0)))
