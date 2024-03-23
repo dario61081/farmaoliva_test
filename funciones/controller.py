@@ -1,8 +1,9 @@
 __version__ = "1.0"
 __author__ = "Dario Garcia"
 
-from entidades import Organigrama, Area
-from funciones.actions import RegisterArea, PrintOrganigrama, IAction, RemoveArea
+from entidades import Organigrama
+from funciones.actions import ActionRegisterArea, ActionPrintOrganigrama, IOrganigramaAction, ActionRemoveArea, \
+    ActionContarTotalFuncionarios
 
 
 class ControllerOrganigrama:
@@ -16,106 +17,32 @@ class ControllerOrganigrama:
         self.cursor = "{} > "
         self.actions = {}
 
-        # def remove_area(organigrama: Organigrama, area: Area) -> None:
-        #     organigrama.remove_area(area=area)
-
         # registrar acciones
-        self.add_action("a", RegisterArea)
-        self.add_action("b", RemoveArea)
-        self.add_action("i", PrintOrganigrama)
+        self.register_action("a", ActionRegisterArea)
+        self.register_action("b", ActionRemoveArea)
+        self.register_action("i", ActionPrintOrganigrama)
+        self.register_action("t", ActionContarTotalFuncionarios)
 
-    def add_action(self, name: str, action: IAction):
+    def register_action(self, name: str, action: IOrganigramaAction) -> None:
         self.actions[name] = action
 
     def execute_action(self, name: str, organigrama: Organigrama, **kwargs) -> None:
-        self.actions[name]()(organigrama, **kwargs)
+        try:
+            self.actions[name]()(organigrama, **kwargs)
+        except KeyError:
+            print("(!) Acción no encontrada")
 
     def execute(self) -> None:
 
-        def title(titulo: str, divider: str = "") -> None:
-            print(f"{titulo}")
-            print(f"{divider * len(titulo)}")
+        self.execute_action('i', self.organigrama)
 
         while self.running:
 
-            # vista previa
-            # self.organigrama.render()
-            self.execute_action("i", self.organigrama, None)
-            # seleccione accion?
-            comando = input(self.cursor.format("Accion: (a: nuevo | b: borrar | i: imprimir | x: salir "))
-            self.execute_action(comando, self.organigrama, None)
-            if comando in ('a', 'b', 'i', 'x'):
-                if comando == 'a':
-                    # agregar nodo
+            comando = input(
+                self.cursor.format("Accion: (a: nuevo | b: borrar | i: imprimir | t: totalizar | x: salir "))
+            if comando == "x":
+                print("Saliendo...")
+                self.running = False
+                break
 
-                    print("[Agregar nueva area]")
-                    print("-" * 50)
-                    codigo = int(input(self.cursor.format("Codigo del area")))
-                    nombre = input(self.cursor.format("Nombre del area"))
-                    cantidad = int(input(self.cursor.format("Cantidad del area")))
-
-                    nueva_area = Area(codigo_area=codigo, nombre_area=nombre, cantidad_funcionarios=cantidad)
-
-                    if not self.organigrama.get_root():
-                        self.organigrama.create_area(area=nueva_area, parent=None)
-                        print("Agregado area como raiz del organigrama")
-                        continue
-
-                    if self.organigrama.get_root():
-                        codigo_area = int(input(self.cursor.format("Codigo del area padre a asignar")) or 0)
-                        area = self.organigrama.get_root().find(codigo_area)
-                        if area:
-                            area.agregar_area_hija(nueva_area)
-                        print("Agregado al area {}".format(codigo_area))
-                    # else:
-                    #     # organigrama._raiz = nueva_area
-                    #     organigrama.create_area(area=nueva_area, parent=None)
-                    #     print("Agregado area como raiz del organigrama")
-
-                elif comando == 'b':
-                    # quitar nodo
-                    codigo = int(input(self.cursor.format("Codigo del area a borrar")))
-                    if self.organigrama.get_root():
-                        self.organigrama.get_root().borrar_area(codigo)
-                    else:
-                        print("Organigrama sin areas definidas")
-
-                # elif comando == 'i':
-                #     # imprimir organigrama
-                #     if organigrama.raiz:
-                #         organigrama.raiz.imprimir_jerarquia()
-                #     else:
-                #         print "Organigrama sin areas definidas"
-
-                # elif comando == 's':
-                #     # sumorg
-                #     codigo_padre = int(input(cursor.format("ingrese codigo de area a ejecutar sumorg(?)")))
-                #     if codigo_padre:
-                #         valor = organigrama.raiz.sumorg(codigo_padre)
-                #         print "sumorg({}) = {}".format(codigo_padre, valor)
-
-                elif comando == 'x':
-                    # terminar loop
-                    self.running = False
-                    print("** Fin **")
-
-            else:
-                print("Comando invalido")
-
-
-def sumorg(organigrama, codigo_nodo):
-    """
-    Funcion para hacer conteo de cantidad de funcionarios por nodos de una jerarquia
-    :return:
-    """
-    if not isinstance(organigrama, (Organigrama,)):
-        raise Exception("El argumento pasado como organigrama no es valido")
-
-    if not isinstance(codigo_nodo, (int,)):
-        raise Exception("Codigo de nodo no es numerico")
-
-    r = organigrama.get_area_by_codigo(codigo_area=codigo_nodo)
-    if not isinstance(r, (Area,)):
-        return 0
-    else:
-        return r.get_cantidades_funcionarios()
+            self.execute_action(comando, self.organigrama)

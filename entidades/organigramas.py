@@ -36,6 +36,7 @@ class Organigrama:
             return
 
         self.get_root().imprimir_jerarquia()
+        print("\n" * 2)
 
     def get_area_by_codigo(self, *, codigo_area: int):
         """

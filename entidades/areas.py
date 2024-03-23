@@ -94,7 +94,7 @@ class Area:
             for h in self.get_childs():
                 f = h.get(codigo)
                 if f:
-                    # f.imprimir()  # depuracion
+                    f.imprimir()  # depuracion
                     return f
         return None
 
@@ -158,3 +158,6 @@ class Area:
                     f = h.find(codigo_area)
                     if f:
                         return f
+
+    def get_title(self):
+        return self._nombre_area

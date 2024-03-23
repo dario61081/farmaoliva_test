@@ -1,17 +1,24 @@
 from typing import Protocol
 
 from entidades import Organigrama, Area
+from funciones.tools import sumorg
 
 
-class IAction(Protocol):
+class IOrganigramaAction(Protocol):
     def __call__(self, organigrama: Organigrama, **kwargs) -> None:
         pass
 
 
-class RegisterArea(IAction):
+class IStateAction(Protocol):
+    def __call__(self, prior_state: bool) -> bool:
+        pass
+
+
+class ActionRegisterArea(IOrganigramaAction):
 
     def __call__(self, organigrama: Organigrama, **kwargs) -> None:
-        cursor = "AGREGAR: {}> "
+
+        cursor = "[NUEVO] {}> "
 
         codigo = int(input(cursor.format("Codigo del area")))
         nombre = input(cursor.format("Nombre del area"))
@@ -21,7 +28,7 @@ class RegisterArea(IAction):
 
         if not organigrama.get_root():
             organigrama.create_area(area=nueva_area, parent=None)
-            print("Agregado area como raiz del organigrama")
+            print(f"Agregado area \"{nueva_area.get_title()}\" como raiz del organigrama")
             return
 
         if organigrama.get_root():
@@ -32,7 +39,7 @@ class RegisterArea(IAction):
             print("Agregado al area {}".format(codigo_area))
 
 
-class RemoveArea(IAction):
+class ActionRemoveArea(IOrganigramaAction):
     def __call__(self, organigrama: Organigrama, **kwargs) -> None:
         cursor = "ELIMINAR: {}> "
         codigo = int(input(cursor.format("Codigo del area a borrar")))
@@ -43,6 +50,11 @@ class RemoveArea(IAction):
             print("Area no encontrada")
 
 
-class PrintOrganigrama(IAction):
+class ActionPrintOrganigrama(IOrganigramaAction):
     def __call__(self, organigrama: Organigrama, **kwargs) -> None:
         organigrama.render()
+
+
+class ActionContarTotalFuncionarios(IOrganigramaAction):
+    def __call__(self, organigrama: Organigrama, **kwargs) -> None:
+        print("La cantidad total de funcionarios es: {}".format(sumorg(organigrama=organigrama, codigo_nodo=0)))
